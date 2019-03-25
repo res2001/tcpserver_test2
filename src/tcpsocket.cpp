@@ -211,6 +211,10 @@ std::string tcp_socket::read_line()
 //		std::clog << "read cnt: " << recvbuf_cnt_ << "\tcopy cnt: " << copy_cnt << std::endl;
 		if(copy_cnt)
 		{
+			if((str.length() + copy_cnt) > READ_LINE_MAX_STRING)
+			{
+				throw socket_exception(SE_BUFFER_OVERFLOW, socket_exception_str(SE_BUFFER_OVERFLOW));
+			}
 			str += std::string(recvdata_ptr, copy_cnt);
 			recvbuf_remove_n(copy_cnt);
 		}

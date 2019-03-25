@@ -10,9 +10,10 @@
 
 #include <exception>
 
-#define SOCKET_EXCEPTION_MAP(XX)			\
-	XX(1, BADSOCKET, "Bad socket.")			\
-	XX(2, REMOTE_SHUTDOWN, "Remote host closed connection.")
+#define SOCKET_EXCEPTION_MAP(XX)								\
+	XX(1, BADSOCKET, "Bad socket.")								\
+	XX(2, REMOTE_SHUTDOWN, "Remote host closed connection.")	\
+	XX(3, BUFFER_OVERFLOW, "Buffer overflow.")
 
 #define XX(num, name, helpstr)		SE_ ## name = num,
 enum socket_exception_e {

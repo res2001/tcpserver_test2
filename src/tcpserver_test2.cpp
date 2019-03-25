@@ -6,6 +6,7 @@
  */
 #include <iostream>
 #include <thread>
+#include <cstring>
 
 #include "tcpsocket.h"
 #include "sequences.h"
@@ -15,7 +16,10 @@
 
 void usage(const char* progname)
 {
-	std::clog << "Usage: " << progname << " [<host>] [<port>]" << std::endl;
+	std::clog	<< "Usage: " << progname << " [<host IP>] [<port>]" << std::endl
+				<< "Default value:" << std::endl
+				<< "\thost IP\t- all" << std::endl
+				<< "\tport - " DEFAULT_PORT << std::endl;
 }
 
 void test2_thread_func(std::unique_ptr<tcp_socket> socket)
@@ -33,6 +37,10 @@ void test2_thread_func(std::unique_ptr<tcp_socket> socket)
 	{
 		std::clog << "Error: " << se.nerr_ << " - " << se.serr_ << std::endl;
 	}
+	catch (const std::bad_alloc& e)
+	{
+		std::clog << "Allocation failed in socket thread: " << e.what() << std::endl;
+	}
 }
 
 int main(int argc, const char **argv)
@@ -44,6 +52,11 @@ int main(int argc, const char **argv)
 		host = DEFAULT_HOST;
 		svc = DEFAULT_PORT;
 	} else if(argc == 2) {
+		if(std::strcmp(argv[1], "-h") == 0)
+		{
+			usage(argv[0]);
+			return 0;
+		}
 		svc = argv[1];
 	} else if(argc == 3) {
 		host = argv[1];
@@ -66,6 +79,10 @@ int main(int argc, const char **argv)
 	catch(socket_exception &se)
 	{
 		std::clog << "Socket error: " << se.nerr_ << " : " << se.serr_ << std::endl;
+	}
+	catch (const std::bad_alloc& e)
+	{
+		std::clog << "Allocation failed: " << e.what() << std::endl;
 	}
 	return 0;
 }
